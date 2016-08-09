@@ -7,9 +7,8 @@
     border: 1px solid black;
     box-shadow: 2px 2px 3px black;
     display: block;
-    width: 320px;
-    height: 240px;
     margin: auto;
+    max-width: 100%;
 }
 
 #saveImg {
@@ -36,4 +35,9 @@
 
 .image-item {
     display: inline-block;
+}
+
+.image-item img {
+    height: auto;
+    max-width: 100%;
 }

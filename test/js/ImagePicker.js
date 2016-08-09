@@ -3,8 +3,6 @@ define([], function () {
     function ImagePicker(videoContainerId, manager) {
         this.container = document.getElementById(videoContainerId);
         this.manager = manager;
-        this.width = 320;
-        this.height = 240;
 
         _createVideoElement(this.container);
         _createSaveButton(this.container);
@@ -43,34 +41,40 @@ define([], function () {
     }
 
     function _setUpVideo() {
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+        navigator.getMedia = ( navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia);
 
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({video: true}).then(function (stream) {
-                this.video.src = window.URL.createObjectURL(stream);
-                this.video.play();
-            });
-        } else if (navigator.getUserMedia) { // Standard
-            navigator.getUserMedia(
+        if (!navigator.getMedia) {
+            console.log("Your browser doesn't have support for the navigator.getUserMedia interface.");
+        }
+        else {
+            navigator.getMedia(
                 {
                     video: true
                 },
+                // Success Callback
                 function (stream) {
-                    this.video.src = window.URL.createObjectURL(stream);
+                    video.src = window.URL.createObjectURL(stream);
                     video.play();
                 },
+                // Error Callback
                 function (err) {
-                    console.log("The following error occurred: " + err.name);
+                    console.log('There was an error with accessing the camera stream');
                 }
-            )
-        } else {
-            console.log("getUserMedia not supported");
+            );
+
         }
     }
 
     ImagePicker.prototype.takePhoto = function () {
         var context = this.canvas.getContext('2d');
-        context.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+        var width = this.video.videoWidth,
+            height = this.video.videoHeight;
+        this.canvas.width = width;
+        this.canvas.height = height;
+        context.drawImage(this.video, 0, 0, width, height);
         var image = this.canvas.toDataURL('image/png');
         this.manager.addImage({image: image});
     };

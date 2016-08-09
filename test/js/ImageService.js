@@ -3,7 +3,6 @@ define([], function () {
     function ImageService(renderAllCallback, renderSingleCallback) {
         var _images = JSON.parse(localStorage.getItem('images'));
         this.images = _images ? _images : [];
-        console.log(this.images);
         this.renderAllCallback = renderAllCallback;
         this.renderSingleCallback = renderSingleCallback;
         this.renderAllCallback(this.images);
